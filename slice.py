@@ -11,14 +11,66 @@ PIECES = {
     'q': 'queen'
 }
 
+INV_PIECES = dict((v, k) for k, v in PIECES.items())
+
+NUMBERS = '12345678'
+
 class Space:
     def __init__(self, id=None, piece=None, color=None):
         self.id = id
         self.piece = piece
         self.color = color
 
-    def __str__(self):
-        return f"{self.color} {self.piece} on {self.id}"
+    def row(self):
+        return self.id // 8
+
+    def col(self):
+        return self.id % 8
+
+    def FEN(self):
+        if self.color == 'white':
+            return INV_PIECES[self.piece].upper()
+        elif self.color == 'black':
+            return INV_PIECES[self.piece]
+
+    def __repr__(self):
+        if not self.piece and not self.color:
+            return f'_'
+        return f"{self.color} {self.piece} on {self.id} ({self.row()} row)"
+
+def get_rows(table):
+    if not table:
+        return None
+    return [
+        table[8*i:8*i+8] for i in range(8)
+    ]
+
+
+
+class Board:
+    def __init__(self, table=None):
+        self.rows = get_rows(table)
+        # print(self.rows)
+
+    def __repr__(self):
+        output = ''
+        if self.rows:
+            for row in self.rows:
+                for item in row:
+                    if item.FEN():
+                        output += item.FEN()
+                    else:
+                        if not output:
+                            output += '1'
+                        elif output[-1] in NUMBERS:
+                            output = output[:-1] + str(int(output[-1])+1)
+                        else:
+                            output += '1'
+                output += '-'
+        output = output[:-1]
+        return output
+
+
 
 def crop(infile,height,width):
     im = Image.open(infile)
@@ -46,7 +98,7 @@ def main():
         path=os.path.join('slices2',f"IMG-{k}.png")
         img.save(path)
 
-def get_name(piece_str):
+def get_piece(piece_str):
     space = Space()
     if piece_str in LETTERS:
         space.color = 'black'
@@ -57,8 +109,24 @@ def get_name(piece_str):
 
 
 def get_names(filename):
-    pass
+    filename = filename.replace('.jpeg', '')
+    board = []
+    for row in filename.split('-'):
+        for letter in row:
+            # print(letter)
+            if letter in NUMBERS:
+                for i in range(int(letter)):
+                    board.append(Space())
+                    # print("empty space")
+            if letter in LETTERS or letter in LETTERS.upper():
+                board.append(get_piece(letter))
+                # print(get_piece(letter).piece)
+    for i, item in enumerate(board):
+        item.id = i
+    # print(board)
+    # print(Board(board))
+    print(Board(board))
 
 
-if __name__=='__main__':
-    main()
+# if __name__=='__main__':
+    # main()
