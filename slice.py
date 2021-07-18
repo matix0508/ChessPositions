@@ -138,7 +138,6 @@ class App:
         return Board(board)
 
     def crop(self, height: int, width: int):
-
         with Image.open(self.filepath) as im:
             for i in range(im.height // height):
                 for j in range(im.width // width):
@@ -160,9 +159,10 @@ class App:
             img.paste(piece_im)
             folder = self.get_folder_name(k)
             folder = os.path.join(os.getcwd(), self.output_dir, folder)
-            path = os.path.join(folder, f"IMG-{k}.png")
             if not os.path.isdir(folder):
                 os.makedirs(folder)
+            idx = len(os.listdir(folder))
+            path = os.path.join(folder, f"IMG-{idx}.png")
             img.save(path)
 
     def slice_everything(self) -> None:
