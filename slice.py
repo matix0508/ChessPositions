@@ -1,6 +1,7 @@
 from typing import Optional, List, Tuple
 from PIL import Image
 import os
+from sys import argv
 
 LETTERS = 'qwertyuiopasdfghjklzxcvbnm'
 NUMBERS = '12345678'
@@ -169,3 +170,8 @@ class App:
         while self.file_count != len(self.files):
             self.save_slice()
             self.setup()
+
+
+if __name__ == "__main__":
+    app = App(argv[1], argv[2])
+    app.slice_everything()

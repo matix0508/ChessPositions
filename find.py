@@ -1,3 +1,4 @@
+from sys import argv
 from typing import Tuple
 
 from PIL import Image
@@ -51,3 +52,8 @@ class FenApp:
             spaces.append(space)
         self.board = Board(spaces)
         print(self.board)
+
+
+if __name__ == "__main__":
+    app = FenApp(argv[1])
+    app.recognize_slices()
