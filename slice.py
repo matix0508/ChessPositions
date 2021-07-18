@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from PIL import Image
 import os
@@ -23,10 +23,10 @@ class Space:
         self.piece = piece
         self.color = color
 
-    def row(self):
+    def row(self) -> int:
         return self.id // 8
 
-    def col(self):
+    def col(self) -> int:
         return self.id % 8
 
     def get_FEN(self) -> str:
@@ -35,15 +35,13 @@ class Space:
         elif self.color == 'black':
             return INV_PIECES[self.piece]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if not self.piece and not self.color:
             return f'_'
         return f"{self.color} {self.piece} on {self.id} ({self.row()} row)"
 
 
-def get_rows(table):
-    if not table:
-        return None
+def get_rows(table: List[int]):
     return [
         table[8 * i:8 * i + 8] for i in range(8)
     ]
@@ -111,11 +109,11 @@ def get_piece(piece_str: str) -> Space:
 
 class App:
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str) -> None:
         self.filename = filename
-        self.board = None
+        self.board = self.get_board()
 
-    def get_names(self):
+    def get_board(self):
         name = self.filename.replace('.jpeg', '')
         board = []
         for row in name.split('-'):
@@ -128,4 +126,4 @@ class App:
         for i, item in enumerate(board):
             item.id = i
 
-        self.board = Board(board)
+        return Board(board)
